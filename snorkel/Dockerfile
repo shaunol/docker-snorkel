@@ -10,7 +10,7 @@ ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 
 # Install deps
 RUN apt-get update --fix-missing \
-  && apt-get install -y unzip build-essential gcc git curl grep dpkg sed vim python wget bzip2 ca-certificates libglib2.0-0 libxext6 libsm6 libxrender1 mercurial subversion \
+  && apt-get install -y unzip build-essential gcc git curl grep dpkg sed vim python wget bzip2 ca-certificates libglib2.0-0 libxext6 libsm6 libxrender1 mercurial subversion postgresql-client postgresql-client-common \
   && curl --silent --show-error --retry 5 https://bootstrap.pypa.io/get-pip.py | python
 
 # Install miniconda
@@ -36,6 +36,8 @@ COPY ./jupyter_notebook_config.py /root/.jupyter/jupyter_notebook_config.py
 
 WORKDIR /opt/snorkel
 
+COPY ./docker_run.sh ./
+
 EXPOSE 8888
 
-ENTRYPOINT source ./set_env.sh && jupyter notebook --ip=0.0.0.0 --allow-root --notebook-dir=/opt/snorkel/tutorials/ --no-browser --NotebookApp.token=''
+CMD ["./docker_run.sh"]

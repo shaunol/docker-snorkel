@@ -2,7 +2,16 @@ version: "3"
 services:
 
   snorkel:
-    build: .
-    hostname: snorkel
+    build: ./snorkel
+    environment:
+      - SNORKELDB=postgresql://postgres:postgres@postgres/postgres
     ports:
       - "8888:8888"
+    depends_on:
+      - postgres
+    command: bash -c "{ while ! { pg_isready -h postgres; } do sleep 2; done; } && ./docker_run.sh"
+
+  postgres:
+    image: postgres:10
+    environment:
+      - POSTGRES_PASSWORD=postgres
